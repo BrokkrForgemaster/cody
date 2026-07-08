@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { services } from "@/data/services";
 import { siteSettings } from "@/data/siteSettings";
@@ -8,9 +9,13 @@ export function Footer() {
     <footer className="border-t border-white/10 bg-black pb-24 pt-14 text-sm text-muted md:pb-10">
       <div className="container-page grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
         <div>
-          <p className="font-heading text-3xl uppercase leading-none text-white">
-            {siteSettings.businessName}
-          </p>
+          <Image
+            src={siteSettings.logo.src}
+            alt={siteSettings.logo.alt}
+            width={siteSettings.logo.width}
+            height={siteSettings.logo.height}
+            className="h-auto w-56 max-w-full"
+          />
           <p className="mt-3 max-w-sm leading-6">
             {siteSettings.tagline} Premium vehicle customization for Central Kentucky trucks,
             Jeeps, SUVs, and performance builds.

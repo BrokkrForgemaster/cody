@@ -16,6 +16,8 @@ const config: Config = {
         muted: "#A3A3A3",
         accent: "#C1121F",
         "blue-accent": "#1E90FF",
+        "cfg-orange": "#E87722",
+        "cfg-orange-dark": "#c5601a",
       },
       fontFamily: {
         heading: ["Bebas Neue", "Oswald", "Arial Narrow", "Impact", "sans-serif"],

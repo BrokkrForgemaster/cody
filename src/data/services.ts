@@ -45,7 +45,7 @@ export const services: Service[] = [
     faqs: faqItems.filter((item) => item.serviceSlug === "custom-lighting"),
     seo: {
       title:
-        "Custom Truck Lighting in Central Kentucky | Bluegrass Custom Coatings & Lighting",
+        "Custom Truck Lighting in Central Kentucky | Forged Customs",
       description:
         "Premium custom lighting installs in Central Kentucky including headlights, fog lights, rock lights, wheel lights, RGB accents, and hidden wiring.",
     },

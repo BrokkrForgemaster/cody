@@ -84,7 +84,7 @@ export const projects: Project[] = [
     seo: {
       title: "2023 Jeep Wrangler Rubicon Lighting Build | Richmond KY",
       description:
-        "Custom Jeep Wrangler Rubicon lighting and powder coating case study from Bluegrass Custom Coatings & Lighting in Central Kentucky.",
+        "Custom Jeep Wrangler Rubicon lighting and powder coating case study from Forged Customs in Central Kentucky.",
     },
   },
   {
@@ -252,7 +252,7 @@ export const projects: Project[] = [
     seo: {
       title: "2020 Toyota Tacoma TRD Pro Lighting Build | Lexington KY",
       description:
-        "Toyota Tacoma TRD Pro custom lighting and powder coating case study from Bluegrass Custom Coatings & Lighting.",
+        "Toyota Tacoma TRD Pro custom lighting and powder coating case study from Forged Customs.",
     },
   },
 ];

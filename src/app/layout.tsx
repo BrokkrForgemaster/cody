@@ -11,9 +11,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(absoluteUrl()),
   title: {
     default: siteSettings.seo.title,
-    template: "%s | Bluegrass Custom Coatings & Lighting",
+    template: `%s | ${siteSettings.businessName}`,
   },
   description: siteSettings.seo.description,
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
   keywords: [
     "Central Kentucky vehicle customization",
     "Lexington KY custom truck lighting",
@@ -34,10 +39,10 @@ export const metadata: Metadata = {
     siteName: siteSettings.businessName,
     images: [
       {
-        url: "/images/hero-truck.png",
-        width: 1600,
-        height: 900,
-        alt: "Premium custom truck in dark studio lighting",
+        url: siteSettings.logo.src,
+        width: siteSettings.logo.width,
+        height: siteSettings.logo.height,
+        alt: siteSettings.logo.alt,
       },
     ],
     locale: "en_US",
@@ -47,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteSettings.seo.title,
     description: siteSettings.seo.description,
-    images: ["/images/hero-truck.png"],
+    images: [siteSettings.logo.src],
   },
   alternates: {
     canonical: absoluteUrl(),
@@ -70,7 +75,8 @@ const localBusinessJsonLd = {
   telephone: siteSettings.phone,
   email: siteSettings.email,
   url: absoluteUrl(),
-  image: absoluteUrl("/images/hero-truck.png"),
+  image: absoluteUrl(siteSettings.logo.src),
+  logo: absoluteUrl(siteSettings.logo.src),
   makesOffer: [
     "Custom vehicle lighting",
     "OEM paint matching",
@@ -86,7 +92,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-body antialiased">
+      <body className="font-body antialiased" suppressHydrationWarning>
         <Script
           id="local-business-jsonld"
           type="application/ld+json"

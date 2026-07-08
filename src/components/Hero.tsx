@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Gauge } from "lucide-react";
 import { motion } from "framer-motion";
+import { siteSettings } from "@/data/siteSettings";
 
 type HeroProps = {
   eyebrow: string;
@@ -70,6 +71,14 @@ export function Hero({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
+          <Image
+            src={siteSettings.heroLogo.src}
+            alt={siteSettings.heroLogo.alt}
+            width={siteSettings.heroLogo.width}
+            height={siteSettings.heroLogo.height}
+            priority
+            className="mb-6 h-auto w-[min(84vw,560px)] drop-shadow-[0_18px_38px_rgba(0,0,0,0.75)]"
+          />
           <div className="mb-5 inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] text-white backdrop-blur">
             <Gauge size={16} className="text-blue-accent" aria-hidden />
             {eyebrow}

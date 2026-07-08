@@ -1,5 +1,5 @@
 {
-  "name": "bluegrass-custom-demo",
+  "name": "forged-customs-demo",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,16 +10,20 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@react-three/fiber": "^9.6.1",
     "framer-motion": "^12.23.0",
     "lucide-react": "^0.468.0",
     "next": "^15.5.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "three": "^0.185.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.185.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.17.0",
     "eslint-config-next": "^15.5.0",

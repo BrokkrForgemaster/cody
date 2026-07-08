@@ -1,4 +1,4 @@
-# Bluegrass Custom Coatings & Lighting Demo
+# Forged Customs Demo
 
 Premium Next.js website demo for a Central Kentucky automotive customization business specializing in custom lighting, OEM paint matching, powder coating, and full vehicle transformations.
 
@@ -30,6 +30,8 @@ Open `http://localhost:3000`.
 - `/services/powder-coating`
 - `/projects`
 - `/projects/[slug]`
+- `/products`
+- `/products/[slug]`
 - `/gallery`
 - `/about`
 - `/faq`
@@ -43,6 +45,7 @@ Editable demo content lives in:
 - `src/data/homePage.ts`
 - `src/data/services.ts`
 - `src/data/projects.ts`
+- `src/data/products.ts`
 - `src/data/gallery.ts`
 - `src/data/testimonials.ts`
 - `src/data/faq.ts`
@@ -82,6 +85,14 @@ Each project includes:
 
 The dynamic route `/projects/[slug]` reads from that data.
 
+## Edit Products
+
+Product data lives in `src/data/products.ts`.
+
+The current catalog is a prototype for product-only orders, ship-to-shop install routing, vendor lead times, fitment notes, and quote-required fabrication requests. Production should connect this to Shopify or Stripe Checkout for payments, tax, shipping, and order emails.
+
+The demo includes AlphaRex and Morimoto as external supplier references with links to their official installation guide resources. It does not copy supplier images, logos, PDFs, or guide content. Real supplier media should only be added after dealer approval, supplier permission, or customer-provided usage rights.
+
 ## Edit Services
 
 Service data lives in `src/data/services.ts`.
@@ -96,6 +107,8 @@ Recommended production stack:
 
 - Frontend: Next.js on Vercel
 - CMS: Sanity Studio
+- Commerce: Shopify or Stripe Checkout
+- 3D: Three.js / React Three Fiber with headlight-specific GLB assets
 - Media: Sanity Images or Cloudinary
 - Forms: `/api/quote` with Resend, SendGrid, or Google Workspace
 - Analytics: Google Analytics 4 and Google Search Console

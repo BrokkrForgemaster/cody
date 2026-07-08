@@ -69,3 +69,37 @@ export type Testimonial = {
   photo?: string;
   videoLink?: string;
 };
+
+export type Vendor = {
+  id: string;
+  name: string;
+  leadTime: string;
+  shippingOrigin: string;
+  supportNotes: string;
+  website?: string;
+  installationGuideUrl?: string;
+  authorizedUseNote?: string;
+};
+
+export type ProductShipMode = "customer" | "shop-install";
+
+export type Product = {
+  slug: string;
+  title: string;
+  category: string;
+  vendorId: string;
+  image: ImageAsset;
+  price: string;
+  installEstimate: string;
+  summary: string;
+  description: string;
+  compatibleVehicles: string[];
+  badges: string[];
+  shipModes: ProductShipMode[];
+  installGuideUrl?: string;
+  options: Array<{
+    label: string;
+    values: string[];
+  }>;
+  seo: SeoFields;
+};

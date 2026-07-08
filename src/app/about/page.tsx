@@ -8,7 +8,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 export const metadata: Metadata = {
   title: "About | Premium Vehicle Customization in Central Kentucky",
   description:
-    "Learn the shop story behind Bluegrass Custom Coatings & Lighting, a premium Central Kentucky concept for custom lighting, paint matching, and powder coating.",
+    "Learn the shop story behind Forged Customs, a premium Central Kentucky concept for custom lighting, paint matching, and powder coating.",
   alternates: { canonical: "/about" },
 };
 
@@ -41,7 +41,7 @@ export default function AboutPage() {
       <PageHero
         eyebrow="About"
         title="Built Different. Finished Right."
-        description="Bluegrass Custom Coatings & Lighting was built for vehicle owners who care about the details. From subtle OEM+ upgrades to full custom transformations, our work is focused on clean execution, premium finishes, and a finished product that looks intentional from every angle."
+        description="Forged Customs was built for vehicle owners who care about the details. From subtle OEM+ upgrades to full custom transformations, our work is focused on clean execution, premium finishes, and a finished product that looks intentional from every angle."
         image={{ src: "/images/gallery-shop-truck.png", alt: "Custom truck in premium fabrication shop" }}
       />
 

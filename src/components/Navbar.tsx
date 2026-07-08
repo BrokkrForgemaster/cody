@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Phone, X } from "lucide-react";
@@ -14,18 +15,20 @@ export function Navbar() {
   return (
     <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-background/82 backdrop-blur-xl">
       <div className="container-page flex h-20 items-center justify-between gap-5">
-        <Link href="/" className="group flex items-center gap-3" onClick={() => setOpen(false)}>
-          <span className="grid size-10 place-items-center rounded-md border border-accent/55 bg-accent/15 font-heading text-2xl text-white shadow-glow">
-            BG
-          </span>
-          <span className="flex min-w-0 flex-col">
-            <span className="font-heading text-xl uppercase leading-none tracking-normal text-white sm:text-2xl">
-              Bluegrass Custom
-            </span>
-            <span className="hidden text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted sm:block">
-              Coatings & Lighting
-            </span>
-          </span>
+        <Link
+          href="/"
+          className="group flex min-w-0 items-center"
+          onClick={() => setOpen(false)}
+          aria-label={`${siteSettings.businessName} home`}
+        >
+          <Image
+            src={siteSettings.logoMark.src}
+            alt={siteSettings.logoMark.alt}
+            width={siteSettings.logoMark.width}
+            height={siteSettings.logoMark.height}
+            priority
+            className="size-12 object-contain drop-shadow-[0_0_18px_rgba(193,18,31,0.35)] transition group-hover:scale-105"
+          />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
@@ -49,7 +52,7 @@ export function Navbar() {
             Call
           </a>
           <Link href="/quote" className="cta-primary">
-            {siteSettings.primaryCta}
+            Quote
           </Link>
         </div>
 
@@ -81,7 +84,7 @@ export function Navbar() {
               </Link>
             ))}
             <Link href="/quote" onClick={() => setOpen(false)} className="cta-primary mt-3 w-full">
-              {siteSettings.primaryCta}
+              Quote
             </Link>
           </nav>
         </div>
