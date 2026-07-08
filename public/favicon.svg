@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Forged Customs favicon</title>
+  <defs>
+    <linearGradient id="steel" x1="8" y1="6" x2="54" y2="58">
+      <stop offset="0" stop-color="#f8f8f8"/>
+      <stop offset="0.45" stop-color="#8b8b8b"/>
+      <stop offset="1" stop-color="#252525"/>
+    </linearGradient>
+    <linearGradient id="red" x1="12" y1="8" x2="52" y2="56">
+      <stop offset="0" stop-color="#f04a54"/>
+      <stop offset="0.55" stop-color="#c1121f"/>
+      <stop offset="1" stop-color="#5f050b"/>
+    </linearGradient>
+  </defs>
+  <path d="M10 12h46l-5 10H24v7h22l-5 9H24v14H10z" fill="url(#steel)"/>
+  <path d="M35 22h20l-5 10H43v10h11l5 10H35z" fill="url(#red)"/>
+  <path d="M13 55h27" stroke="#c1121f" stroke-width="3" stroke-linecap="round"/>
+</svg>

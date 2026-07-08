@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title id="title">Forged Customs Hero Logo</title>
+  <desc id="desc">Transparent Forged Customs wordmark with metallic finish, red Customs accent, and tagline.</desc>
+  <defs>
+    <linearGradient id="steel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f7f7f7"/>
+      <stop offset="0.18" stop-color="#868686"/>
+      <stop offset="0.52" stop-color="#262626"/>
+      <stop offset="0.78" stop-color="#b6b6b6"/>
+      <stop offset="1" stop-color="#353535"/>
+    </linearGradient>
+    <linearGradient id="redSteel" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ff3a3a"/>
+      <stop offset="0.34" stop-color="#c1121f"/>
+      <stop offset="0.68" stop-color="#5d0409"/>
+      <stop offset="1" stop-color="#e51b25"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" x2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.48" stop-color="#5c5c5c"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-35%" width="140%" height="180%">
+      <feDropShadow dx="0" dy="14" stdDeviation="9" flood-color="#000000" flood-opacity="0.78"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#c1121f" flood-opacity="0.22"/>
+    </filter>
+    <pattern id="scratches" width="34" height="34" patternUnits="userSpaceOnUse" patternTransform="rotate(15)">
+      <path d="M2 8h22M9 18h18M0 29h30" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+      <path d="M6 3h16M11 24h13" stroke="#000000" stroke-opacity="0.22" stroke-width="1"/>
+    </pattern>
+    <style>
+      .word {
+        font-family: Impact, "Arial Black", "Bebas Neue", sans-serif;
+        font-style: italic;
+        font-weight: 900;
+      }
+      .wide {
+        font-family: "Arial Narrow", Impact, sans-serif;
+        font-weight: 700;
+        letter-spacing: 28px;
+      }
+      .tag {
+        font-family: "Arial Narrow", Arial, sans-serif;
+        font-weight: 700;
+        letter-spacing: 16px;
+        paint-order: stroke fill;
+      }
+    </style>
+  </defs>
+  <g filter="url(#softShadow)">
+    <text class="word" x="124" y="375" font-size="154" fill="#060606" stroke="#030303" stroke-width="14">FORGED</text>
+    <text class="word" x="124" y="364" font-size="154" fill="url(#steel)" stroke="url(#edge)" stroke-width="2.5">FORGED</text>
+    <text class="word" x="124" y="364" font-size="154" fill="url(#scratches)" opacity="0.84">FORGED</text>
+  </g>
+  <path d="M105 427h130" stroke="#c1121f" stroke-width="5"/>
+  <path d="M965 427h130" stroke="#c1121f" stroke-width="5"/>
+  <text class="wide" x="274" y="443" font-size="54" fill="url(#redSteel)" stroke="#ff3030" stroke-width="1.2">CUSTOMS</text>
+  <text
+    class="tag"
+    x="198"
+    y="512"
+    font-size="30"
+    fill="#f1f1f1"
+    stroke="#121212"
+    stroke-width="0.9"
+    opacity="0.98"
+  >
+    BUILT DIFFERENT. FINISHED RIGHT.
+  </text>
+</svg>
