@@ -1,8 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle2, ChevronLeft, ChevronRight, UploadCloud } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { CheckCircle2, ChevronLeft, ChevronRight, Loader2, UploadCloud } from "lucide-react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const steps = ["Vehicle", "Services", "Details", "Photos", "Contact"];
@@ -13,12 +13,55 @@ const serviceOptions = [
   "Full Build Package",
   "Not Sure Yet",
 ];
-const budgetOptions = ["Under $1,000", "$1,000 - $2,500", "$2,500 - $5,000", "$5,000+", "Not sure yet"];
+const budgetOptions = [
+  "Under $1,000",
+  "$1,000 - $2,500",
+  "$2,500 - $5,000",
+  "$5,000+",
+  "Not sure yet",
+];
+
+type Form = {
+  year: string;
+  make: string;
+  model: string;
+  trim: string;
+  desiredLook: string;
+  currentIssues: string;
+  timeline: string;
+  budget: string;
+  name: string;
+  phone: string;
+  email: string;
+  city: string;
+};
+
+const emptyForm: Form = {
+  year: "",
+  make: "",
+  model: "",
+  trim: "",
+  desiredLook: "",
+  currentIssues: "",
+  timeline: "",
+  budget: "",
+  name: "",
+  phone: "",
+  email: "",
+  city: "",
+};
 
 export function QuoteBuilder() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>(["Custom Lighting"]);
+  const [form, setForm] = useState<Form>(emptyForm);
+
+  function update<K extends keyof Form>(key: K, value: Form[K]) {
+    setForm((f) => ({ ...f, [key]: value }));
+  }
 
   function toggleService(service: string) {
     setSelectedServices((current) =>
@@ -28,9 +71,40 @@ export function QuoteBuilder() {
     );
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+    setError(null);
+
+    if (!form.name.trim() || !form.phone.trim() || !form.email.trim()) {
+      setError("Name, phone, and email are required.");
+      setStep(4);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/quotes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          services: selectedServices,
+        }),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+      };
+      if (!res.ok || !data.ok) {
+        setError(data.error ?? "Something went wrong. Please try again or call the shop.");
+        setSubmitting(false);
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError("Network error. Please try again or call the shop.");
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -46,7 +120,10 @@ export function QuoteBuilder() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-5xl rounded-lg border border-white/10 bg-panel shadow-2xl shadow-black/35">
+    <form
+      onSubmit={handleSubmit}
+      className="mx-auto max-w-5xl rounded-lg border border-white/10 bg-panel shadow-2xl shadow-black/35"
+    >
       <div className="border-b border-white/10 p-4 sm:p-6">
         <div className="grid grid-cols-5 gap-2">
           {steps.map((label, index) => (
@@ -80,10 +157,34 @@ export function QuoteBuilder() {
               <fieldset>
                 <legend className="heading-md">Vehicle</legend>
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  <input className="focus-field" name="year" placeholder="Year" aria-label="Year" />
-                  <input className="focus-field" name="make" placeholder="Make" aria-label="Make" />
-                  <input className="focus-field" name="model" placeholder="Model" aria-label="Model" />
-                  <input className="focus-field" name="trim" placeholder="Trim" aria-label="Trim" />
+                  <input
+                    className="focus-field"
+                    placeholder="Year"
+                    aria-label="Year"
+                    value={form.year}
+                    onChange={(e) => update("year", e.target.value)}
+                  />
+                  <input
+                    className="focus-field"
+                    placeholder="Make"
+                    aria-label="Make"
+                    value={form.make}
+                    onChange={(e) => update("make", e.target.value)}
+                  />
+                  <input
+                    className="focus-field"
+                    placeholder="Model"
+                    aria-label="Model"
+                    value={form.model}
+                    onChange={(e) => update("model", e.target.value)}
+                  />
+                  <input
+                    className="focus-field"
+                    placeholder="Trim"
+                    aria-label="Trim"
+                    value={form.trim}
+                    onChange={(e) => update("trim", e.target.value)}
+                  />
                 </div>
               </fieldset>
             ) : null}
@@ -119,11 +220,34 @@ export function QuoteBuilder() {
               <fieldset>
                 <legend className="heading-md">Project Details</legend>
                 <div className="mt-6 grid gap-4">
-                  <textarea className="focus-field min-h-28" name="desiredLook" placeholder="Desired look" aria-label="Desired look" />
-                  <textarea className="focus-field min-h-24" name="currentIssues" placeholder="Current issues" aria-label="Current issues" />
+                  <textarea
+                    className="focus-field min-h-28"
+                    placeholder="Desired look"
+                    aria-label="Desired look"
+                    value={form.desiredLook}
+                    onChange={(e) => update("desiredLook", e.target.value)}
+                  />
+                  <textarea
+                    className="focus-field min-h-24"
+                    placeholder="Current issues"
+                    aria-label="Current issues"
+                    value={form.currentIssues}
+                    onChange={(e) => update("currentIssues", e.target.value)}
+                  />
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <input className="focus-field" name="timeline" placeholder="Timeline" aria-label="Timeline" />
-                    <select className="focus-field" name="budget" defaultValue="" aria-label="Budget range">
+                    <input
+                      className="focus-field"
+                      placeholder="Timeline"
+                      aria-label="Timeline"
+                      value={form.timeline}
+                      onChange={(e) => update("timeline", e.target.value)}
+                    />
+                    <select
+                      className="focus-field"
+                      aria-label="Budget range"
+                      value={form.budget}
+                      onChange={(e) => update("budget", e.target.value)}
+                    >
                       <option value="" disabled>
                         Budget range
                       </option>
@@ -146,7 +270,8 @@ export function QuoteBuilder() {
                       Photo upload available in production version.
                     </p>
                     <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-muted">
-                      Phase 2 can accept project photos, before shots, part references, and mobile uploads through a protected API route and CMS/media pipeline.
+                      Phase 2 can accept project photos, before shots, part references, and mobile
+                      uploads through a protected API route and CMS/media pipeline.
                     </p>
                   </div>
                 </div>
@@ -157,11 +282,47 @@ export function QuoteBuilder() {
               <fieldset>
                 <legend className="heading-md">Contact</legend>
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  <input className="focus-field" name="name" placeholder="Name" aria-label="Name" required />
-                  <input className="focus-field" name="phone" placeholder="Phone" aria-label="Phone" required />
-                  <input className="focus-field" name="email" placeholder="Email" aria-label="Email" type="email" required />
-                  <input className="focus-field" name="city" placeholder="City" aria-label="City" />
+                  <input
+                    className="focus-field"
+                    placeholder="Name"
+                    aria-label="Name"
+                    required
+                    value={form.name}
+                    onChange={(e) => update("name", e.target.value)}
+                  />
+                  <input
+                    className="focus-field"
+                    placeholder="Phone"
+                    aria-label="Phone"
+                    required
+                    value={form.phone}
+                    onChange={(e) => update("phone", e.target.value)}
+                  />
+                  <input
+                    className="focus-field"
+                    placeholder="Email"
+                    aria-label="Email"
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => update("email", e.target.value)}
+                  />
+                  <input
+                    className="focus-field"
+                    placeholder="City"
+                    aria-label="City"
+                    value={form.city}
+                    onChange={(e) => update("city", e.target.value)}
+                  />
                 </div>
+                {error ? (
+                  <p
+                    role="alert"
+                    className="mt-4 rounded-md border border-accent/40 bg-accent/10 px-3 py-2 text-sm text-white"
+                  >
+                    {error}
+                  </p>
+                ) : null}
               </fieldset>
             ) : null}
           </motion.div>
@@ -173,7 +334,7 @@ export function QuoteBuilder() {
           type="button"
           className="cta-secondary disabled:cursor-not-allowed disabled:opacity-40"
           onClick={() => setStep((current) => Math.max(current - 1, 0))}
-          disabled={step === 0}
+          disabled={step === 0 || submitting}
         >
           <ChevronLeft size={18} aria-hidden />
           Back
@@ -188,8 +349,15 @@ export function QuoteBuilder() {
             <ChevronRight size={18} aria-hidden />
           </button>
         ) : (
-          <button type="submit" className="cta-primary">
-            Submit Project Request
+          <button type="submit" className="cta-primary" disabled={submitting} aria-busy={submitting}>
+            {submitting ? (
+              <>
+                <Loader2 size={18} className="animate-spin" aria-hidden />
+                Submitting…
+              </>
+            ) : (
+              "Submit Project Request"
+            )}
           </button>
         )}
       </div>
