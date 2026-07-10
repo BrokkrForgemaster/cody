@@ -1,7 +1,7 @@
 "use client";
 
 import { useLiveQuery } from "dexie-react-hooks";
-import { BellRing, Check, ChevronDown, Loader2, Plus, Trash2, X } from "lucide-react";
+import { BellRing, Check, ChevronDown, Loader2, Mail, Plus, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { listCustomers } from "@/lib/offline/customers";
 import {
@@ -40,14 +40,14 @@ function dueBadge(due: string | null): {
   const readable = d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
   if (diff < 0) {
     return {
-      label: `${readable} · overdue`,
+      label: `${readable} / overdue`,
       className: "border-accent/50 bg-accent/10 text-accent",
       bucket: "overdue",
     };
   }
   if (diff === 0) {
     return {
-      label: `${readable} · today`,
+      label: `${readable} / today`,
       className: "border-cfg-orange/50 bg-cfg-orange/10 text-cfg-orange",
       bucket: "today",
     };
@@ -59,9 +59,44 @@ function dueBadge(due: string | null): {
   };
 }
 
+type SendState =
+  | { status: "idle" }
+  | { status: "sending" }
+  | { status: "ok"; sent: number; skipped: number; checked: number; errors: number }
+  | { status: "error"; message: string };
+
 export function FollowUpsView() {
   const [showDone, setShowDone] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [send, setSend] = useState<SendState>({ status: "idle" });
+
+  async function sendDueNow() {
+    setSend({ status: "sending" });
+    try {
+      const res = await fetch("/api/admin/follow-ups/send-now", { method: "POST" });
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+        checked?: number;
+        sent?: number;
+        skipped?: number;
+        errors?: { id: string; error: string }[];
+      };
+      if (!res.ok || !data.ok) {
+        setSend({ status: "error", message: data.error ?? "Send failed." });
+        return;
+      }
+      setSend({
+        status: "ok",
+        sent: data.sent ?? 0,
+        skipped: data.skipped ?? 0,
+        checked: data.checked ?? 0,
+        errors: data.errors?.length ?? 0,
+      });
+    } catch (err) {
+      setSend({ status: "error", message: err instanceof Error ? err.message : String(err) });
+    }
+  }
 
   const rows = useLiveQuery(() => listFollowUps(showDone), [showDone]);
   const customers = useLiveQuery(() => listCustomers(), []);
@@ -117,29 +152,62 @@ export function FollowUpsView() {
             All
           </button>
         </div>
-        <button
-          type="button"
-          className="cta-primary text-xs"
-          onClick={() => setAddOpen((v) => !v)}
-        >
-          {addOpen ? (
-            <>
-              <X size={14} aria-hidden />
-              Close
-            </>
-          ) : (
-            <>
-              <Plus size={14} aria-hidden />
-              Add follow-up
-            </>
-          )}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            className="cta-secondary text-xs"
+            onClick={sendDueNow}
+            disabled={send.status === "sending"}
+            title="Send today's post-delivery emails now instead of waiting for the daily cron."
+          >
+            {send.status === "sending" ? (
+              <>
+                <Loader2 size={14} className="animate-spin" aria-hidden />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Mail size={14} aria-hidden />
+                Send due emails
+              </>
+            )}
+          </button>
+          <button
+            type="button"
+            className="cta-primary text-xs"
+            onClick={() => setAddOpen((v) => !v)}
+          >
+            {addOpen ? (
+              <>
+                <X size={14} aria-hidden />
+                Close
+              </>
+            ) : (
+              <>
+                <Plus size={14} aria-hidden />
+                Add follow-up
+              </>
+            )}
+          </button>
+        </div>
       </div>
+
+      {send.status === "ok" ? (
+        <div className="rounded-md border border-emerald-400/30 bg-emerald-400/5 px-3 py-2 text-xs text-emerald-300">
+          Checked {send.checked}, sent {send.sent}, skipped {send.skipped} (no email on file)
+          {send.errors > 0 ? `, ${send.errors} error(s)` : ""}.
+        </div>
+      ) : null}
+      {send.status === "error" ? (
+        <div className="rounded-md border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-white" role="alert">
+          {send.message}
+        </div>
+      ) : null}
 
       {addOpen ? <AddFollowUpForm onDone={() => setAddOpen(false)} /> : null}
 
       {loading ? (
-        <p className="panel-border rounded-lg p-10 text-center text-sm text-muted">Loading…</p>
+        <p className="panel-border rounded-lg p-10 text-center text-sm text-muted">Loading...</p>
       ) : rows.length === 0 ? (
         <div className="panel-border flex flex-col items-center gap-3 rounded-lg p-10 text-center">
           <BellRing size={28} className="text-blue-accent" aria-hidden />
@@ -358,7 +426,7 @@ function AddFollowUpForm({ onDone }: { onDone: () => void }) {
         </select>
         <input name="due_on" type="date" className="focus-field" />
         <select name="customer_id" defaultValue="" className="focus-field">
-          <option value="">— No customer —</option>
+          <option value="">-- No customer --</option>
           {sortedCustomers.map((c) => (
             <option key={c.id} value={c.id}>
               {c.last_name}, {c.first_name}
@@ -377,7 +445,7 @@ function AddFollowUpForm({ onDone }: { onDone: () => void }) {
           {busy ? (
             <>
               <Loader2 size={12} className="animate-spin" aria-hidden />
-              Adding…
+              Adding...
             </>
           ) : (
             "Add"

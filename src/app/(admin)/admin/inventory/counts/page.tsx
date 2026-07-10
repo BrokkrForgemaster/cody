@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { CountSessionsList } from "@/components/admin/inventory/CountSessionsList";
+import { InventoryNav } from "@/components/admin/inventory/InventoryNav";
 
 export const metadata: Metadata = {
   title: "Count sessions",
@@ -15,6 +16,7 @@ export default function CountsPage() {
         title="Cycle counts"
         description="Open a session, scan or add parts, enter actual counts. Committing generates adjustments for any variance."
       />
+      <InventoryNav />
       <CountSessionsList />
     </div>
   );

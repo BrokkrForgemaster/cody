@@ -7,9 +7,13 @@ import type {
   Customer,
   FollowUp,
   Job,
+  JobAttachment,
+  Message,
   Part,
   PartBatch,
   PartMovement,
+  PurchaseOrder,
+  PurchaseOrderItem,
   Quote,
   ServiceNote,
   Vehicle,
@@ -29,7 +33,11 @@ export type PendingMutation = {
     | "part_batches"
     | "part_movements"
     | "count_sessions"
-    | "count_entries";
+    | "count_entries"
+    | "purchase_orders"
+    | "purchase_order_items"
+    | "messages"
+    | "job_attachments";
   op: "insert" | "update" | "delete";
   payload: Record<string, unknown>;
   attempts: number;
@@ -48,6 +56,10 @@ class ForgedCustomsDB extends Dexie {
   part_movements!: Table<PartMovement, string>;
   count_sessions!: Table<CountSession, string>;
   count_entries!: Table<CountEntry, string>;
+  purchase_orders!: Table<PurchaseOrder, string>;
+  purchase_order_items!: Table<PurchaseOrderItem, string>;
+  messages!: Table<Message, string>;
+  job_attachments!: Table<JobAttachment, string>;
   pending!: Table<PendingMutation, string>;
   meta!: Table<{ key: string; value: string }, string>;
 
@@ -73,6 +85,12 @@ class ForgedCustomsDB extends Dexie {
       part_movements: "id, part_id, movement_type, occurred_at, job_id",
       count_sessions: "id, status, updated_at",
       count_entries: "id, session_id, part_id, updated_at",
+    });
+    this.version(5).stores({
+      purchase_orders: "id, status, vendor, updated_at, deleted_at",
+      purchase_order_items: "id, purchase_order_id, part_id, updated_at",
+      messages: "id, customer_id, job_id, status, channel, updated_at, deleted_at",
+      job_attachments: "id, job_id, kind, updated_at, deleted_at",
     });
   }
 }

@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteCustomer, getCustomer } from "@/lib/offline/customers";
+import { MessageHistory } from "@/components/admin/messages/MessageHistory";
+import { SendMessage } from "@/components/admin/messages/SendMessage";
 import { VehiclesList } from "./VehiclesList";
 
 export function CustomerDetail({ id }: { id: string }) {
@@ -118,6 +120,19 @@ export function CustomerDetail({ id }: { id: string }) {
 
       <div className="panel-border rounded-lg p-6">
         <VehiclesList customerId={customer.id} />
+      </div>
+
+      <div className="panel-border rounded-lg p-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="font-heading text-xl uppercase text-text">Messages</h3>
+          <SendMessage
+            customerId={customer.id}
+            customerFirstName={customer.first_name}
+            email={customer.email}
+            phone={customer.phone}
+          />
+        </div>
+        <MessageHistory customerId={customer.id} />
       </div>
     </div>
   );

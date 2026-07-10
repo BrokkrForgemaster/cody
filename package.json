@@ -26,8 +26,10 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-konva": "^19.2.5",
+    "resend": "^6.17.2",
     "serwist": "^9.5.11",
-    "three": "^0.185.1"
+    "three": "^0.185.1",
+    "twilio": "^6.0.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

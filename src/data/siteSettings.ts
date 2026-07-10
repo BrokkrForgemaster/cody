@@ -18,7 +18,7 @@ export const siteSettings = {
   },
   logoMark: {
     src: "/favicon.svg",
-    alt: "Forged Customs FC mark",
+    alt: "Forged Customs FC monogram",
     width: 64,
     height: 64,
   },

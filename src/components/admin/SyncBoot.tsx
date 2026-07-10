@@ -1,15 +1,43 @@
 "use client";
 
 import { useEffect } from "react";
+import { refreshAttachments } from "@/lib/offline/attachments";
 import { refreshCountEntries, refreshCountSessions } from "@/lib/offline/counts";
 import { refreshCustomers } from "@/lib/offline/customers";
 import { refreshFollowUps } from "@/lib/offline/followUps";
 import { refreshBatches, refreshMovements } from "@/lib/offline/inventory";
 import { refreshJobs } from "@/lib/offline/jobs";
+import { refreshMessages } from "@/lib/offline/messages";
 import { refreshParts } from "@/lib/offline/parts";
 import { initOfflineSync } from "@/lib/offline/queue";
 import { refreshQuotes } from "@/lib/offline/quotes";
 import { refreshVehicles } from "@/lib/offline/vehicles";
+
+/**
+ * Pull every mirrored table from Supabase into the local Dexie store. Each
+ * refresh is independent and failures are logged, not surfaced, so the app
+ * keeps working offline. Runs on mount and again whenever the browser
+ * reconnects.
+ */
+function refreshAll() {
+  const refreshers: Array<[string, () => Promise<unknown>]> = [
+    ["customers", refreshCustomers],
+    ["vehicles", refreshVehicles],
+    ["jobs", refreshJobs],
+    ["quotes", refreshQuotes],
+    ["follow-ups", refreshFollowUps],
+    ["parts", refreshParts],
+    ["batches", refreshBatches],
+    ["movements", refreshMovements],
+    ["count sessions", refreshCountSessions],
+    ["count entries", refreshCountEntries],
+    ["messages", refreshMessages],
+    ["attachments", refreshAttachments],
+  ];
+  for (const [label, run] of refreshers) {
+    run().catch((err) => console.warn(`[sync] ${label} refresh failed`, err));
+  }
+}
 
 /**
  * Mounted once inside the admin shell. Kicks off the mutation-queue drain
@@ -20,36 +48,12 @@ import { refreshVehicles } from "@/lib/offline/vehicles";
 export function SyncBoot() {
   useEffect(() => {
     initOfflineSync();
-    refreshCustomers().catch((err) => {
-      console.warn("[sync] customers refresh failed", err);
-    });
-    refreshVehicles().catch((err) => {
-      console.warn("[sync] vehicles refresh failed", err);
-    });
-    refreshJobs().catch((err) => {
-      console.warn("[sync] jobs refresh failed", err);
-    });
-    refreshQuotes().catch((err) => {
-      console.warn("[sync] quotes refresh failed", err);
-    });
-    refreshFollowUps().catch((err) => {
-      console.warn("[sync] follow-ups refresh failed", err);
-    });
-    refreshParts().catch((err) => {
-      console.warn("[sync] parts refresh failed", err);
-    });
-    refreshBatches().catch((err) => {
-      console.warn("[sync] batches refresh failed", err);
-    });
-    refreshMovements().catch((err) => {
-      console.warn("[sync] movements refresh failed", err);
-    });
-    refreshCountSessions().catch((err) => {
-      console.warn("[sync] count sessions refresh failed", err);
-    });
-    refreshCountEntries().catch((err) => {
-      console.warn("[sync] count entries refresh failed", err);
-    });
+    refreshAll();
+    // When connectivity returns, pull fresh reads (the write queue already
+    // re-drains on this event via initOfflineSync).
+    const onOnline = () => refreshAll();
+    window.addEventListener("online", onOnline);
+    return () => window.removeEventListener("online", onOnline);
   }, []);
 
   return null;

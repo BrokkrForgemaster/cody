@@ -1,8 +1,9 @@
 "use client";
 
 import { LogOut, Menu, Search, WifiOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { signOut } from "@/app/(auth)/login/actions";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type AdminTopBarProps = {
   onMenuClick: () => void;
@@ -11,9 +12,18 @@ type AdminTopBarProps = {
 };
 
 export function AdminTopBar({ onMenuClick, userInitials, userEmail }: AdminTopBarProps) {
+  const router = useRouter();
   const [online, setOnline] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  // Client-side sign-out so it works offline: clears the persisted session
+  // (and the auth cookies) locally. AuthGate then routes to /login.
+  const handleSignOut = async () => {
+    setMenuOpen(false);
+    await getSupabaseBrowserClient().auth.signOut();
+    router.replace("/login");
+  };
 
   useEffect(() => {
     const update = () => setOnline(navigator.onLine);
@@ -92,16 +102,15 @@ export function AdminTopBar({ onMenuClick, userInitials, userEmail }: AdminTopBa
                 <p className="text-xs uppercase tracking-[0.18em] text-muted">Signed in</p>
                 <p className="truncate text-sm text-text">{userEmail}</p>
               </div>
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  role="menuitem"
-                  className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-text transition hover:bg-white/5"
-                >
-                  <LogOut size={16} aria-hidden />
-                  Sign out
-                </button>
-              </form>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={handleSignOut}
+                className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-text transition hover:bg-white/5"
+              >
+                <LogOut size={16} aria-hidden />
+                Sign out
+              </button>
             </div>
           ) : null}
         </div>

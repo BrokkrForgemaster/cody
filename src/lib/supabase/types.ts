@@ -129,10 +129,15 @@ export type FollowUp = {
   completed_at: string | null;
   assigned_to: string | null;
   created_by: string | null;
+  email_sent_at: string | null;
 };
 
-export type FollowUpInsert = Omit<FollowUp, "id" | "created_at" | "updated_at" | "deleted_at"> & {
+export type FollowUpInsert = Omit<
+  FollowUp,
+  "id" | "created_at" | "updated_at" | "deleted_at" | "email_sent_at"
+> & {
   id?: string;
+  email_sent_at?: string | null;
 };
 export type FollowUpUpdate = Partial<FollowUpInsert>;
 
@@ -285,6 +290,110 @@ export type CountEntryInsert = Omit<CountEntry, "id" | "created_at" | "updated_a
 };
 export type CountEntryUpdate = Partial<CountEntryInsert>;
 
+export type PurchaseOrderStatus =
+  | "draft"
+  | "sent"
+  | "partial_received"
+  | "received"
+  | "cancelled";
+
+export type PurchaseOrder = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  po_number: string | null;
+  vendor: string;
+  status: PurchaseOrderStatus;
+  ordered_on: string | null;
+  expected_on: string | null;
+  received_on: string | null;
+  notes: string | null;
+  created_by: string | null;
+};
+
+export type PurchaseOrderInsert = Omit<
+  PurchaseOrder,
+  "id" | "created_at" | "updated_at" | "deleted_at"
+> & { id?: string };
+export type PurchaseOrderUpdate = Partial<PurchaseOrderInsert>;
+
+export type PurchaseOrderItem = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  purchase_order_id: string;
+  part_id: string | null;
+  label: string;
+  vendor_sku: string | null;
+  quantity_ordered: number;
+  quantity_received: number;
+  unit_cost_cents: number | null;
+  notes: string | null;
+};
+
+export type PurchaseOrderItemInsert = Omit<
+  PurchaseOrderItem,
+  "id" | "created_at" | "updated_at"
+> & { id?: string };
+export type PurchaseOrderItemUpdate = Partial<PurchaseOrderItemInsert>;
+
+export type MessageChannel = "sms" | "email";
+export type MessageDirection = "in" | "out";
+export type MessageStatus = "queued" | "sending" | "sent" | "failed";
+
+export type Message = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  customer_id: string | null;
+  job_id: string | null;
+  channel: MessageChannel;
+  direction: MessageDirection;
+  to_address: string;
+  from_address: string | null;
+  subject: string | null;
+  body: string;
+  template: string | null;
+  status: MessageStatus;
+  provider_id: string | null;
+  error: string | null;
+  sent_at: string | null;
+  sent_by: string | null;
+};
+
+export type MessageInsert = Omit<
+  Message,
+  "id" | "created_at" | "updated_at" | "deleted_at"
+> & { id?: string };
+export type MessageUpdate = Partial<MessageInsert>;
+
+export type AttachmentKind = "photo" | "document";
+export type AttachmentTag = "before" | "after" | "reference" | null;
+
+export type JobAttachment = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  job_id: string;
+  storage_path: string;
+  filename: string;
+  content_type: string | null;
+  size_bytes: number | null;
+  kind: AttachmentKind;
+  tag: AttachmentTag;
+  caption: string | null;
+  uploaded_by: string | null;
+};
+
+export type JobAttachmentInsert = Omit<
+  JobAttachment,
+  "id" | "created_at" | "updated_at" | "deleted_at"
+> & { id?: string };
+export type JobAttachmentUpdate = Partial<JobAttachmentInsert>;
+
 export type Database = {
   public: {
     Tables: {
@@ -342,6 +451,26 @@ export type Database = {
         Row: CountEntry;
         Insert: CountEntryInsert;
         Update: CountEntryUpdate;
+      };
+      purchase_orders: {
+        Row: PurchaseOrder;
+        Insert: PurchaseOrderInsert;
+        Update: PurchaseOrderUpdate;
+      };
+      purchase_order_items: {
+        Row: PurchaseOrderItem;
+        Insert: PurchaseOrderItemInsert;
+        Update: PurchaseOrderItemUpdate;
+      };
+      messages: {
+        Row: Message;
+        Insert: MessageInsert;
+        Update: MessageUpdate;
+      };
+      job_attachments: {
+        Row: JobAttachment;
+        Insert: JobAttachmentInsert;
+        Update: JobAttachmentUpdate;
       };
     };
     Views: Record<string, never>;

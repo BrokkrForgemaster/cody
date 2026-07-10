@@ -8,6 +8,6 @@ export async function middleware(request: NextRequest) {
 export const config = {
   // Run on everything except static assets, images, and the service worker.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.svg|images|icons|sw.js|workbox-.*|manifest.webmanifest|robots.txt|sitemap.xml).*)",
+    "/((?!_next/static|_next/image|favicon.ico|favicon.svg|images|icons|sw.js|workbox-.*|manifest.webmanifest|robots.txt|sitemap.xml).*)",
   ],
 };

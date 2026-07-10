@@ -5,6 +5,9 @@ import { CalendarDays, Loader2, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { JobAttachments } from "@/components/admin/attachments/JobAttachments";
+import { MessageHistory } from "@/components/admin/messages/MessageHistory";
+import { SendMessage } from "@/components/admin/messages/SendMessage";
 import { getCustomer } from "@/lib/offline/customers";
 import { deleteJob, getJob } from "@/lib/offline/jobs";
 import { getVehicle } from "@/lib/offline/vehicles";
@@ -131,6 +134,27 @@ export function JobDetail({ id }: { id: string }) {
         {job.summary ? (
           <p className="mt-4 whitespace-pre-wrap text-sm text-muted">{job.summary}</p>
         ) : null}
+      </div>
+
+      <div className="panel-border rounded-lg p-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="font-heading text-xl uppercase text-text">Attachments</h3>
+        </div>
+        <JobAttachments jobId={job.id} />
+      </div>
+
+      <div className="panel-border rounded-lg p-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="font-heading text-xl uppercase text-text">Messages</h3>
+          <SendMessage
+            customerId={customer?.id ?? null}
+            jobId={job.id}
+            customerFirstName={customer?.first_name}
+            email={customer?.email}
+            phone={customer?.phone}
+          />
+        </div>
+        <MessageHistory jobId={job.id} />
       </div>
     </div>
   );

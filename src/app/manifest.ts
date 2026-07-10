@@ -3,7 +3,7 @@ import { siteSettings } from "@/data/siteSettings";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: `${siteSettings.businessName} — Shop Ops`,
+    name: `${siteSettings.businessName} - Shop Ops`,
     short_name: siteSettings.shortName,
     description:
       "Internal operations platform for Forged Customs: customers, quotes, jobs, inventory, and follow-ups. Works offline for shop-floor use.",
@@ -21,12 +21,6 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: "any",
         type: "image/svg+xml",
         purpose: "any",
-      },
-      {
-        src: "/favicon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
-        purpose: "maskable",
       },
     ],
     shortcuts: [

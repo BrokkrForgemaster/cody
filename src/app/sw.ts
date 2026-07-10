@@ -16,7 +16,20 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
+  // defaultCache uses NetworkFirst for navigations + RSC, so any admin route
+  // visited while online is cached and served back offline. The fallback below
+  // covers a cold offline start or a route that was never opened online.
   runtimeCaching: defaultCache,
+  fallbacks: {
+    entries: [
+      {
+        url: "/~offline",
+        matcher({ request }) {
+          return request.destination === "document";
+        },
+      },
+    ],
+  },
 });
 
 serwist.addEventListeners();

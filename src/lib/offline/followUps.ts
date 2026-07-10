@@ -77,6 +77,7 @@ export async function createFollowUp(input: FollowUpInsert): Promise<FollowUp> {
     completed_at: input.completed_at ?? null,
     assigned_to: input.assigned_to ?? null,
     created_by: input.created_by ?? null,
+    email_sent_at: input.email_sent_at ?? null,
   };
   await getDB().follow_ups.put(row);
   await enqueue({
