@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, FileText, KanbanSquare, Package, Users } from "lucide-react";
+import { ArrowUpRight, FileText, KanbanSquare, Package, ShieldCheck, Users } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 
 export const metadata: Metadata = {
@@ -20,6 +20,7 @@ const quickLinks = [
   { label: "Add customer", href: "/admin/customers/new", icon: Users },
   { label: "Jobs board", href: "/admin/jobs", icon: KanbanSquare },
   { label: "Inventory", href: "/admin/inventory", icon: Package },
+  { label: "Security", href: "/admin/security", icon: ShieldCheck },
 ];
 
 export default function AdminDashboardPage() {
@@ -49,7 +50,7 @@ export default function AdminDashboardPage() {
         <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-blue-accent">
           Quick actions
         </h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {quickLinks.map((link) => {
             const Icon = link.icon;
             return (

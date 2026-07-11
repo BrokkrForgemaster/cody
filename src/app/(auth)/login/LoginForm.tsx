@@ -26,7 +26,17 @@ function SubmitButton() {
   );
 }
 
-export function LoginForm({ next }: { next: string }) {
+type LoginFormProps = {
+  initialEmail?: string;
+  initialRememberEmail?: boolean;
+  next: string;
+};
+
+export function LoginForm({
+  initialEmail = "",
+  initialRememberEmail = false,
+  next,
+}: LoginFormProps) {
   const [state, formAction] = useActionState<LoginState, FormData>(signIn, null);
 
   return (
@@ -48,6 +58,7 @@ export function LoginForm({ next }: { next: string }) {
           required
           className="focus-field"
           placeholder="you@forgedcustoms.com"
+          defaultValue={initialEmail}
         />
       </div>
 
@@ -67,6 +78,20 @@ export function LoginForm({ next }: { next: string }) {
           className="focus-field"
         />
       </div>
+
+      <label
+        htmlFor="rememberEmail"
+        className="flex items-center gap-3 text-sm font-medium text-muted"
+      >
+        <input
+          id="rememberEmail"
+          name="rememberEmail"
+          type="checkbox"
+          defaultChecked={initialRememberEmail}
+          className="size-4 rounded border-border bg-black/35 accent-accent focus:ring-2 focus:ring-blue-accent/25"
+        />
+        <span>Remember my email</span>
+      </label>
 
       {state?.error ? (
         <p

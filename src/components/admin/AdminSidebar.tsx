@@ -9,6 +9,8 @@ import {
   KanbanSquare,
   LayoutDashboard,
   Package,
+  ShieldCheck,
+  UserCog,
   Users,
   X,
 } from "lucide-react";
@@ -28,6 +30,8 @@ export const adminNav: NavItem[] = [
   { label: "Jobs", href: "/admin/jobs", icon: KanbanSquare },
   { label: "Inventory", href: "/admin/inventory", icon: Package },
   { label: "Follow-ups", href: "/admin/follow-ups", icon: BellRing },
+  { label: "Team", href: "/admin/team", icon: UserCog },
+  { label: "Security", href: "/admin/security", icon: ShieldCheck },
 ];
 
 type AdminSidebarProps = {

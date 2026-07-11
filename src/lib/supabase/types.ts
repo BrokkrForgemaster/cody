@@ -1,6 +1,8 @@
 // Hand-written domain types matching supabase/migrations/0001_customers_vehicles.sql
 // When the schema stabilizes, replace with generated types via `supabase gen types typescript`.
 
+export type UserRole = "admin" | "manager" | "employee";
+
 export type CustomerSource = "website" | "referral" | "walk-in" | "social" | "other";
 
 export type Customer = {

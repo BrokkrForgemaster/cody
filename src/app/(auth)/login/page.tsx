@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { cookies } from "next/headers";
 import { siteSettings } from "@/data/siteSettings";
 import { LoginForm } from "./LoginForm";
+import { REMEMBERED_LOGIN_EMAIL_COOKIE } from "./rememberedEmailCookie";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -13,6 +15,8 @@ type LoginPageProps = {
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { next } = await searchParams;
+  const cookieStore = await cookies();
+  const rememberedEmail = cookieStore.get(REMEMBERED_LOGIN_EMAIL_COOKIE)?.value ?? "";
 
   return (
     <div className="w-full max-w-md">
@@ -35,7 +39,11 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       </div>
 
       <div className="panel-border rounded-lg p-6">
-        <LoginForm next={next ?? "/admin"} />
+        <LoginForm
+          initialEmail={rememberedEmail}
+          initialRememberEmail={Boolean(rememberedEmail)}
+          next={next ?? "/admin"}
+        />
       </div>
 
       <p className="mt-6 text-center text-xs uppercase tracking-[0.18em] text-muted">

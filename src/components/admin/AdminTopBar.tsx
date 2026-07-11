@@ -1,6 +1,7 @@
 "use client";
 
-import { LogOut, Menu, Search, WifiOff } from "lucide-react";
+import Link from "next/link";
+import { LogOut, Menu, Search, ShieldCheck, WifiOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -102,6 +103,15 @@ export function AdminTopBar({ onMenuClick, userInitials, userEmail }: AdminTopBa
                 <p className="text-xs uppercase tracking-[0.18em] text-muted">Signed in</p>
                 <p className="truncate text-sm text-text">{userEmail}</p>
               </div>
+              <Link
+                href="/admin/security"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-text transition hover:bg-white/5"
+              >
+                <ShieldCheck size={16} aria-hidden />
+                Security
+              </Link>
               <button
                 type="button"
                 role="menuitem"

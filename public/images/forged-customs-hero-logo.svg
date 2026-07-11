@@ -20,14 +20,43 @@
       <stop offset="0.48" stop-color="#5c5c5c"/>
       <stop offset="1" stop-color="#ffffff"/>
     </linearGradient>
+    <linearGradient id="forgedAccent" x1="0" x2="1">
+      <stop offset="0"    stop-color="#c1121f" stop-opacity="0"/>
+      <stop offset="0.10" stop-color="#ff3030"/>
+      <stop offset="0.50" stop-color="#ffdddd"/>
+      <stop offset="0.90" stop-color="#ff3030"/>
+      <stop offset="1"    stop-color="#c1121f" stop-opacity="0"/>
+    </linearGradient>
     <filter id="softShadow" x="-20%" y="-35%" width="140%" height="180%">
-      <feDropShadow dx="0" dy="14" stdDeviation="9" flood-color="#000000" flood-opacity="0.78"/>
-      <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#c1121f" flood-opacity="0.22"/>
+      <feDropShadow dx="0" dy="14" stdDeviation="9"   flood-color="#000000" flood-opacity="0.78"/>
+      <feDropShadow dx="0" dy="0"  stdDeviation="4"   flood-color="#c1121f" flood-opacity="0.42"/>
     </filter>
     <pattern id="scratches" width="34" height="34" patternUnits="userSpaceOnUse" patternTransform="rotate(15)">
       <path d="M2 8h22M9 18h18M0 29h30" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
       <path d="M6 3h16M11 24h13" stroke="#000000" stroke-opacity="0.22" stroke-width="1"/>
     </pattern>
+    <filter id="forgedBevel" x="-5%" y="-25%" width="110%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="bumpMap"/>
+      <feSpecularLighting in="bumpMap" surfaceScale="5" specularConstant="2.5"
+                          specularExponent="45" lighting-color="#ddeeff" result="specLight">
+        <feDistantLight azimuth="128" elevation="34"/>
+      </feSpecularLighting>
+      <feComposite in="specLight" in2="SourceAlpha" operator="in" result="bevel"/>
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="glowBlur"/>
+      <feFlood flood-color="#aaccff" flood-opacity="0" result="glowColor">
+        <animate attributeName="flood-opacity"
+                 values="0;0.55;0.55;0"
+                 keyTimes="0;0.28;0.72;1"
+                 dur="1.1s" begin="2.05s"
+                 repeatCount="1" fill="remove"/>
+      </feFlood>
+      <feComposite in="glowColor" in2="glowBlur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+        <feMergeNode in="bevel"/>
+      </feMerge>
+    </filter>
     <style>
       .word {
         font-family: Impact, "Arial Black", "Bebas Neue", sans-serif;
@@ -47,11 +76,14 @@
       }
     </style>
   </defs>
-  <g filter="url(#softShadow)">
-    <text class="word" x="124" y="375" font-size="154" fill="#060606" stroke="#030303" stroke-width="14">FORGED</text>
-    <text class="word" x="124" y="364" font-size="154" fill="url(#steel)" stroke="url(#edge)" stroke-width="2.5">FORGED</text>
-    <text class="word" x="124" y="364" font-size="154" fill="url(#scratches)" opacity="0.84">FORGED</text>
+  <g filter="url(#forgedBevel)">
+    <g filter="url(#softShadow)">
+      <text class="word" x="124" y="375" font-size="154" fill="#060606" stroke="#030303" stroke-width="14">FORGED</text>
+      <text class="word" x="124" y="364" font-size="154" fill="url(#steel)" stroke="url(#edge)" stroke-width="2.5">FORGED</text>
+      <text class="word" x="124" y="364" font-size="154" fill="url(#scratches)" opacity="0.84">FORGED</text>
+    </g>
   </g>
+  <path d="M118 247h844" stroke="url(#forgedAccent)" stroke-width="1.8" opacity="0.72"/>
   <path d="M105 427h130" stroke="#c1121f" stroke-width="5"/>
   <path d="M965 427h130" stroke="#c1121f" stroke-width="5"/>
   <text class="wide" x="274" y="443" font-size="54" fill="url(#redSteel)" stroke="#ff3030" stroke-width="1.2">CUSTOMS</text>
