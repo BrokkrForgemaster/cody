@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   CheckCircle2,
@@ -56,6 +56,15 @@ export function TeamPanel({ initialMembers }: { initialMembers: TeamMember[] }) 
   const [inviteState, setInviteState] = useState<InviteState>({ type: "idle" });
   const [rowStates, setRowStates]     = useState<Record<string, RowState>>({});
   const [roleWorking, setRoleWorking] = useState<Record<string, boolean>>({});
+  const [roleErrors,  setRoleErrors]  = useState<Record<string, string>>({});
+
+  // Optimistic local roles — synced from props whenever the server refreshes
+  const [localRoles, setLocalRoles] = useState<Record<string, UserRole | null>>(
+    () => Object.fromEntries(initialMembers.map((m) => [m.id, m.role])),
+  );
+  useEffect(() => {
+    setLocalRoles(Object.fromEntries(initialMembers.map((m) => [m.id, m.role])));
+  }, [initialMembers]);
 
   const getRow   = (id: string): RowState => rowStates[id] ?? { type: "idle" };
   const patchRow = (id: string, next: RowState) =>
@@ -104,12 +113,23 @@ export function TeamPanel({ initialMembers }: { initialMembers: TeamMember[] }) 
   // ── role change ────────────────────────────────────────────────────────────
 
   const handleRoleChange = async (member: TeamMember, role: UserRole) => {
+    const previous = localRoles[member.id] ?? null;
+
+    // Optimistic update
+    setLocalRoles((prev) => ({ ...prev, [member.id]: role }));
+    setRoleErrors((prev) => ({ ...prev, [member.id]: "" }));
     setRoleWorking((prev) => ({ ...prev, [member.id]: true }));
+
     try {
       await setUserRole(member.id, role);
       router.refresh();
-    } catch {
-      // silently restore — refresh will re-fetch the current state
+    } catch (err) {
+      // Rollback and surface the error
+      setLocalRoles((prev) => ({ ...prev, [member.id]: previous }));
+      setRoleErrors((prev) => ({
+        ...prev,
+        [member.id]: err instanceof Error ? err.message : "Failed to update role.",
+      }));
     } finally {
       setRoleWorking((prev) => ({ ...prev, [member.id]: false }));
     }
@@ -240,24 +260,22 @@ export function TeamPanel({ initialMembers }: { initialMembers: TeamMember[] }) 
                   </div>
 
                   {/* Role selector */}
-                  <div className="relative shrink-0">
+                  <div className="shrink-0">
                     {isRoleWorking ? (
                       <Loader2 size={16} className="animate-spin text-muted" aria-label="Updating role…" />
                     ) : (
                       <select
-                        value={member.role ?? ""}
+                        value={localRoles[member.id] ?? ""}
                         onChange={(e) => handleRoleChange(member, e.target.value as UserRole)}
                         className={cn(
-                          "cursor-pointer appearance-none rounded-full border px-3 py-1 pr-7 text-xs font-semibold uppercase tracking-[0.12em] transition focus:outline-none focus:ring-2 focus:ring-blue-accent/30",
-                          member.role
-                            ? ROLE_COLORS[member.role]
+                          "cursor-pointer appearance-none rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] transition focus:outline-none focus:ring-2 focus:ring-blue-accent/30",
+                          localRoles[member.id]
+                            ? ROLE_COLORS[localRoles[member.id]!]
                             : "border-white/15 bg-white/5 text-muted",
                         )}
                         aria-label={`Role for ${member.email}`}
                       >
-                        <option value="" disabled>
-                          No role
-                        </option>
+                        <option value="" disabled>No role</option>
                         {ROLES.map((r) => (
                           <option key={r.value} value={r.value} className="bg-panel text-text">
                             {r.label}
@@ -265,6 +283,9 @@ export function TeamPanel({ initialMembers }: { initialMembers: TeamMember[] }) 
                         ))}
                       </select>
                     )}
+                    {roleErrors[member.id] ? (
+                      <p className="mt-1 text-xs text-accent">{roleErrors[member.id]}</p>
+                    ) : null}
                   </div>
 
                   {/* MFA badge */}

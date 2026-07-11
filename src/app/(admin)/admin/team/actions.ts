@@ -19,7 +19,14 @@ export async function listTeamMembers(): Promise<TeamMember[]> {
   const { data, error } = await supabase.auth.admin.listUsers();
   if (error) throw new Error(error.message);
 
-  return data.users.map((user) => ({
+  // listUsers() omits MFA factors — fetch each user individually in parallel
+  const full = await Promise.all(
+    data.users.map((u) =>
+      supabase.auth.admin.getUserById(u.id).then((r) => r.data.user ?? u),
+    ),
+  );
+
+  return full.map((user) => ({
     id: user.id,
     email: user.email ?? "unknown",
     lastSignIn: user.last_sign_in_at ?? null,

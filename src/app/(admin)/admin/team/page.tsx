@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { AlertTriangle } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { listTeamMembers } from "./actions";
+import type { TeamMember } from "./actions";
 import { TeamPanel } from "./TeamPanel";
 
 export const metadata: Metadata = { title: "Team" };
 
 export default async function TeamPage() {
-  let members;
+  let members: TeamMember[] = [];
   let configError: string | null = null;
 
   try {
