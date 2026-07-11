@@ -22,15 +22,13 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+                                     children,
+                                   }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="font-body antialiased" suppressHydrationWarning>
-        {children}
-      </body>
-    </html>
+      <html lang="en">
+      <body className="font-body antialiased">{children}</body>
+      </html>
   );
 }

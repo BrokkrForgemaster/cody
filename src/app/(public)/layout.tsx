@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Footer } from "@/components/Footer";
 import { MobileQuoteBar } from "@/components/MobileQuoteBar";
 import { Navbar } from "@/components/Navbar";
+import { SiteIntroOverlay } from "@/components/SiteIntroOverlay";
 import { siteSettings } from "@/data/siteSettings";
 import { absoluteUrl } from "@/lib/utils";
 
@@ -85,6 +86,7 @@ export default function PublicLayout({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
       />
+      <SiteIntroOverlay />
       <Navbar />
       <main>{children}</main>
       <Footer />

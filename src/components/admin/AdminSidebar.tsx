@@ -9,7 +9,6 @@ import {
   KanbanSquare,
   LayoutDashboard,
   Package,
-  SlidersHorizontal,
   Users,
   X,
 } from "lucide-react";
@@ -26,7 +25,6 @@ export const adminNav: NavItem[] = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Customers", href: "/admin/customers", icon: Users },
   { label: "Quotes", href: "/admin/quotes", icon: FileText },
-  { label: "Configurator", href: "/admin/configurator", icon: SlidersHorizontal },
   { label: "Jobs", href: "/admin/jobs", icon: KanbanSquare },
   { label: "Inventory", href: "/admin/inventory", icon: Package },
   { label: "Follow-ups", href: "/admin/follow-ups", icon: BellRing },

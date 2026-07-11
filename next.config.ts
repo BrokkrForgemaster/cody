@@ -14,6 +14,14 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  webpack: (config, { dev }) => {
+    if (dev) {
+      // B:\ drive doesn't handle webpack's compressed pack files reliably;
+      // memory cache avoids the "incorrect header check" warnings on startup.
+      config.cache = { type: "memory" };
+    }
+    return config;
+  },
 };
 
 export default withSerwist(nextConfig);
