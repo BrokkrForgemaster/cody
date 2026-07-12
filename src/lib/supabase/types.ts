@@ -396,6 +396,84 @@ export type JobAttachmentInsert = Omit<
 > & { id?: string };
 export type JobAttachmentUpdate = Partial<JobAttachmentInsert>;
 
+// ── Invoice types ─────────────────────────────────────────────────────────────
+
+export type InvoiceStatus = "draft" | "sent" | "paid" | "void";
+
+export type Invoice = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  invoice_number: string;
+  customer_id: string | null;
+  vehicle_id: string | null;
+  job_id: string | null;
+  status: InvoiceStatus;
+  issue_date: string;
+  due_date: string | null;
+  subtotal_cents: number;
+  shop_fee_label: string;
+  shop_fee_cents: number;
+  shop_fee_taxable: boolean;
+  tax_rate_bps: number;
+  tax_cents: number;
+  total_cents: number;
+  notes: string | null;
+  internal_notes: string | null;
+  paid_on: string | null;
+  created_by: string | null;
+};
+
+export type InvoiceInsert = {
+  id?: string;
+  invoice_number: string;
+  deleted_at?: string | null;
+  customer_id?: string | null;
+  vehicle_id?: string | null;
+  job_id?: string | null;
+  status?: InvoiceStatus;
+  issue_date?: string;
+  due_date?: string | null;
+  subtotal_cents?: number;
+  shop_fee_label?: string;
+  shop_fee_cents?: number;
+  shop_fee_taxable?: boolean;
+  tax_rate_bps?: number;
+  tax_cents?: number;
+  total_cents?: number;
+  notes?: string | null;
+  internal_notes?: string | null;
+  paid_on?: string | null;
+  created_by?: string | null;
+};
+export type InvoiceUpdate = Partial<InvoiceInsert>;
+
+export type InvoiceLineItem = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  invoice_id: string;
+  sort_order: number;
+  description: string;
+  quantity: number;
+  unit_price_cents: number;
+  amount_cents: number;
+  taxable: boolean;
+};
+
+export type InvoiceLineItemInsert = {
+  id?: string;
+  invoice_id: string;
+  sort_order?: number;
+  description: string;
+  quantity?: number;
+  unit_price_cents?: number;
+  amount_cents?: number;
+  taxable?: boolean;
+};
+export type InvoiceLineItemUpdate = Partial<InvoiceLineItemInsert>;
+
 export type Database = {
   public: {
     Tables: {
@@ -403,76 +481,103 @@ export type Database = {
         Row: Customer;
         Insert: CustomerInsert;
         Update: CustomerUpdate;
+        Relationships: never[];
       };
       vehicles: {
         Row: Vehicle;
         Insert: VehicleInsert;
         Update: VehicleUpdate;
+        Relationships: never[];
       };
       service_notes: {
         Row: ServiceNote;
         Insert: ServiceNoteInsert;
         Update: ServiceNoteUpdate;
+        Relationships: never[];
       };
       jobs: {
         Row: Job;
         Insert: JobInsert;
         Update: JobUpdate;
+        Relationships: never[];
       };
       quotes: {
         Row: Quote;
         Insert: QuoteInsert;
         Update: QuoteUpdate;
+        Relationships: never[];
       };
       follow_ups: {
         Row: FollowUp;
         Insert: FollowUpInsert;
         Update: FollowUpUpdate;
+        Relationships: never[];
       };
       parts: {
         Row: Part;
         Insert: PartInsert;
         Update: PartUpdate;
+        Relationships: never[];
       };
       part_batches: {
         Row: PartBatch;
         Insert: PartBatchInsert;
         Update: PartBatchUpdate;
+        Relationships: never[];
       };
       part_movements: {
         Row: PartMovement;
         Insert: PartMovementInsert;
         Update: never;
+        Relationships: never[];
       };
       count_sessions: {
         Row: CountSession;
         Insert: CountSessionInsert;
         Update: CountSessionUpdate;
+        Relationships: never[];
       };
       count_entries: {
         Row: CountEntry;
         Insert: CountEntryInsert;
         Update: CountEntryUpdate;
+        Relationships: never[];
       };
       purchase_orders: {
         Row: PurchaseOrder;
         Insert: PurchaseOrderInsert;
         Update: PurchaseOrderUpdate;
+        Relationships: never[];
       };
       purchase_order_items: {
         Row: PurchaseOrderItem;
         Insert: PurchaseOrderItemInsert;
         Update: PurchaseOrderItemUpdate;
+        Relationships: never[];
       };
       messages: {
         Row: Message;
         Insert: MessageInsert;
         Update: MessageUpdate;
+        Relationships: never[];
       };
       job_attachments: {
         Row: JobAttachment;
         Insert: JobAttachmentInsert;
         Update: JobAttachmentUpdate;
+        Relationships: never[];
+      };
+      invoices: {
+        Row: Invoice;
+        Insert: InvoiceInsert;
+        Update: InvoiceUpdate;
+        Relationships: never[];
+      };
+      invoice_line_items: {
+        Row: InvoiceLineItem;
+        Insert: InvoiceLineItemInsert;
+        Update: InvoiceLineItemUpdate;
+        Relationships: never[];
       };
     };
     Views: Record<string, never>;

@@ -31,9 +31,14 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    // Supabase unreachable — fail open so the app stays usable.
+    return response;
+  }
 
   const path = request.nextUrl.pathname;
   const isAdmin = path === "/admin" || path.startsWith("/admin/");
@@ -42,7 +47,8 @@ export async function updateSession(request: NextRequest) {
   if (isAdmin && !user) {
     const redirect = request.nextUrl.clone();
     redirect.pathname = "/login";
-    redirect.searchParams.set("next", path);
+    redirect.search = "";
+    if (path) redirect.searchParams.set("next", path);
     return NextResponse.redirect(redirect);
   }
 
