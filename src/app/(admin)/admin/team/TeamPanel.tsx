@@ -79,7 +79,7 @@ export function TeamPanel({ initialMembers }: { initialMembers: TeamMember[] }) 
 
     setInviteState({ type: "sending" });
     try {
-      await inviteEmployee(email, window.location.origin);
+      await inviteEmployee(email);
       setInviteState({ type: "sent", email });
       router.refresh();
     } catch (err) {
@@ -100,7 +100,7 @@ export function TeamPanel({ initialMembers }: { initialMembers: TeamMember[] }) 
   const handleReset = async (member: TeamMember) => {
     patchRow(member.id, { type: "sending" });
     try {
-      await initiatePasswordReset(member.email, window.location.origin);
+      await initiatePasswordReset(member.email);
       patchRow(member.id, { type: "sent" });
     } catch (err) {
       patchRow(member.id, {

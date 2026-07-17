@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { getSupabaseServiceClient } from "@/lib/supabase/service";
 import type { UserRole } from "@/lib/supabase/types";
 
@@ -46,22 +47,54 @@ export async function setUserRole(userId: string, role: UserRole): Promise<void>
   if (error) throw new Error(error.message);
 }
 
-export async function inviteEmployee(email: string, origin: string): Promise<void> {
+const PASSWORD_SETUP_PATH = "/auth/reset-password";
+
+function normalizeOrigin(value: string): string {
+  const withScheme = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+  return new URL(withScheme).origin;
+}
+
+async function getAppOrigin(): Promise<string> {
+  const configured =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.NEXT_PUBLIC_APP_URL ??
+    process.env.NEXT_PUBLIC_VERCEL_URL ??
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ??
+    process.env.VERCEL_URL;
+
+  if (configured?.trim()) {
+    return normalizeOrigin(configured.trim());
+  }
+
+  const headerStore = await headers();
+  const host = headerStore.get("x-forwarded-host") ?? headerStore.get("host");
+  if (!host) throw new Error("Unable to determine app URL for invitation link.");
+
+  const proto =
+    headerStore.get("x-forwarded-proto") ??
+    (host.startsWith("localhost") || host.startsWith("127.0.0.1") ? "http" : "https");
+
+  return normalizeOrigin(`${proto}://${host}`);
+}
+
+async function getPasswordSetupRedirectTo(): Promise<string> {
+  const url = new URL("/auth/callback", await getAppOrigin());
+  url.searchParams.set("next", PASSWORD_SETUP_PATH);
+  return url.toString();
+}
+
+export async function inviteEmployee(email: string): Promise<void> {
   const supabase = getSupabaseServiceClient();
   const { error } = await supabase.auth.admin.inviteUserByEmail(email, {
-    redirectTo: `${origin}/auth/callback?next=/auth/reset-password`,
+    redirectTo: await getPasswordSetupRedirectTo(),
   });
   if (error) throw new Error(error.message);
 }
 
-export async function initiatePasswordReset(email: string, origin: string): Promise<void> {
+export async function initiatePasswordReset(email: string): Promise<void> {
   const supabase = getSupabaseServiceClient();
-  const { error } = await supabase.auth.admin.generateLink({
-    type: "recovery",
-    email,
-    options: {
-      redirectTo: `${origin}/auth/callback?next=/auth/reset-password`,
-    },
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: await getPasswordSetupRedirectTo(),
   });
   if (error) throw new Error(error.message);
 }
